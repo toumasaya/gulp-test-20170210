@@ -12,6 +12,7 @@ import sassInheritance from 'gulp-sass-multi-inheritance';
 
 // file tool
 import sourcemaps from 'gulp-sourcemaps';
+import cssnano from 'gulp-cssnano';
 
 // tool
 import plumber from 'gulp-plumber';
@@ -28,7 +29,8 @@ import remember from 'gulp-remember';
 // variable
 const paths = {
   pugs: 'app/pug/**/*.pug',
-  sass: 'app/sass/**/*.+(sass|scss)'
+  sass: 'app/sass/**/*.+(sass|scss)',
+  css: 'dist/css/*.css'
 }
 
 const filePath = "<%= file.path %>";
@@ -88,6 +90,9 @@ gulp.task('sass', () => {
     .pipe(debug({title: 'sass-debug-sourcemaps-before'}))
     //process scss files
     .pipe(sass.sync())
+    .pipe(cssnano({
+      zindex: false // fixed the z-index bug
+    }))
     // source maps write
     .pipe(sourcemaps.write('.'))
     .pipe(debug({title: 'sass-debug-sourcemaps-after'}))
@@ -98,7 +103,6 @@ gulp.task('sass', () => {
     .pipe(browserSync.reload({stream: true}))
 })
 
-
 gulp.task('setWatch', () => {
   global.isWatching = true;
 });
@@ -106,6 +110,7 @@ gulp.task('setWatch', () => {
 gulp.task('watch', ['browserSync', 'setWatch', 'pug', 'sass'], () => {
   gulp.watch(paths.pugs, ['pug']);
   gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.css).on('change', browserSync.reload);
 });
 
 gulp.task('clean:dist', () => {
