@@ -23,6 +23,7 @@ import filter from 'gulp-filter';
 import gulpIf from 'gulp-if';
 import debug from 'gulp-debug';
 import runSequence from 'run-sequence';
+import remember from 'gulp-remember';
 
 // variable
 const paths = {
@@ -76,6 +77,9 @@ gulp.task('sass', () => {
     //filter out unchanged scss files, only works when watching
     .pipe(gulpIf(global.isWatching, cached('sass')))
     .pipe(debug({title: 'sass-debug-cached'}))
+    // remember
+    .pipe(remember('sass'))
+    .pipe(debug({title: 'sass-debug-remember'}))
     //find files that depend on the files that have changed
     .pipe(sassInheritance({dir: 'app/sass/'}))
     .pipe(debug({title: 'sass-debug-inheritance'}))
@@ -83,7 +87,7 @@ gulp.task('sass', () => {
     .pipe(sourcemaps.init())
     .pipe(debug({title: 'sass-debug-sourcemaps-before'}))
     //process scss files
-    .pipe(sass())
+    .pipe(sass.sync())
     // source maps write
     .pipe(sourcemaps.write('.'))
     .pipe(debug({title: 'sass-debug-sourcemaps-after'}))

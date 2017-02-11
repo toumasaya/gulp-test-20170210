@@ -1,5 +1,33 @@
-.header h1 {
-  color: blue; }
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.header {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background-image: linear-gradient(to right, rgba(102, 102, 255, 0.25), rgba(179, 179, 255, 0.25) 80%, transparent 80%);
+  background-size: 8.47458%;
+  background-origin: content-box;
+  background-clip: content-box;
+  background-position: left top; }
+  .header:after {
+    content: " ";
+    display: block;
+    clear: both; }
+  .header h1 {
+    width: 49.15254%;
+    float: left;
+    margin-right: 1.69492%;
+    color: red; }
+    @media (min-width: 1025px) {
+      .header h1 {
+        color: blue; } }
+  .header p {
+    width: 49.15254%;
+    float: right;
+    margin-right: 0; }
 
 .footer h1 {
   color: pink; }

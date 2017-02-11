@@ -1,0 +1,11 @@
+$susy: (
+  columns: 12,
+  gutters: 0.25,
+  gutter-position: after,
+  global-box-sizing: border-box,
+  debug: (
+    image: show,
+  )
+);
+
+@include border-box-sizing;

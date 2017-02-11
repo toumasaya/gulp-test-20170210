@@ -1,3 +1,9 @@
 .header
+  @include container
   h1
-    color: blue
+    @include span(6)
+    color: red
+    @include breakpoint($desktop)
+      color: blue
+  p
+    @include span(6 last)
