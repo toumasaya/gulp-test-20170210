@@ -13,6 +13,8 @@ import sassInheritance from 'gulp-sass-multi-inheritance';
 // file tool
 import sourcemaps from 'gulp-sourcemaps';
 import cssnano from 'gulp-cssnano';
+import imagemin from 'gulp-imagemin';
+import pngquant from 'imagemin-pngquant';
 
 // tool
 import plumber from 'gulp-plumber';
@@ -30,7 +32,8 @@ import remember from 'gulp-remember';
 const paths = {
   pugs: 'app/pug/**/*.pug',
   sass: 'app/sass/**/*.+(sass|scss)',
-  css: 'dist/css/*.css'
+  css: 'dist/css/*.css',
+  image: 'app/images/*.+(jpg|png|svg)'
 }
 
 const filePath = "<%= file.path %>";
@@ -103,14 +106,26 @@ gulp.task('sass', () => {
     .pipe(browserSync.reload({stream: true}))
 })
 
+gulp.task('img', () => {
+  return gulp.src(paths.image)
+    .pipe(cached(imagemin({
+      progressive: true,
+      svgoPlugins: [{removeViewBox: false}],
+      use: [pngquant()]
+    })))
+    .pipe(gulp.dest('dist/images'))
+    .pipe(notify({message: `img task: ${filePath}`}))
+})
+
 gulp.task('setWatch', () => {
   global.isWatching = true;
 });
 
-gulp.task('watch', ['browserSync', 'setWatch', 'pug', 'sass'], () => {
+gulp.task('watch', ['browserSync', 'setWatch', 'pug', 'sass', 'img'], () => {
   gulp.watch(paths.pugs, ['pug']);
   gulp.watch(paths.sass, ['sass']);
   gulp.watch(paths.css).on('change', browserSync.reload);
+  gulp.watch(paths.image, ['img']);
 });
 
 gulp.task('clean:dist', () => {
@@ -118,9 +133,9 @@ gulp.task('clean:dist', () => {
 });
 
 gulp.task('build', () => {
-  runSequence('clean:dist', ['pug', 'sass']);
+  runSequence('clean:dist', ['pug', 'sass', 'img']);
 });
 
 gulp.task('default', () => {
-  runSequence(['pug', 'sass', 'browserSync', 'watch'])
+  runSequence(['pug', 'sass', 'img', 'browserSync', 'watch'])
 });
