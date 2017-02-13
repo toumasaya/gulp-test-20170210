@@ -8,7 +8,7 @@ logs
 
 # Dependency directories
 node_modules
-bower_componnents
+bower_components
 
 # sass cache
 .sass-cache/
