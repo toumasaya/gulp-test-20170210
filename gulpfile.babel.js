@@ -10,6 +10,13 @@ import pugInheritance from 'gulp-pug-inheritance';
 import sass from 'gulp-sass';
 import sassInheritance from 'gulp-sass-multi-inheritance';
 
+// javascript
+import babelify from 'babelify';
+import browserify from 'browserify';
+import buffer from 'vinyl-buffer';
+import source from 'vinyl-source-stream';
+import uglify from 'gulp-uglify';
+
 // file tool
 import sourcemaps from 'gulp-sourcemaps';
 import cssnano from 'gulp-cssnano';
@@ -30,10 +37,11 @@ import remember from 'gulp-remember';
 
 // variable
 const paths = {
-  pugs: 'app/pug/**/*.pug',
-  sass: 'app/sass/**/*.+(sass|scss)',
   css: 'dist/css/*.css',
-  image: 'app/images/*.+(jpg|png|svg)'
+  image: 'app/images/*.+(jpg|png|svg)',
+  script: 'app/js/*.js',
+  pugs: 'app/pug/**/*.pug',
+  sass: 'app/sass/**/*.+(sass|scss)'
 }
 
 const filePath = "<%= file.path %>";
@@ -82,7 +90,7 @@ gulp.task('sass', () => {
     //filter out unchanged scss files, only works when watching
     .pipe(gulpIf(global.isWatching, cached('sass')))
     .pipe(debug({title: 'sass-debug-cached'}))
-    // remember
+    // remember sass
     .pipe(remember('sass'))
     .pipe(debug({title: 'sass-debug-remember'}))
     //find files that depend on the files that have changed
@@ -106,6 +114,26 @@ gulp.task('sass', () => {
     .pipe(browserSync.reload({stream: true}))
 })
 
+// javascript
+gulp.task('js', () => {
+  const bundler = browserify({
+    entries: 'app/js/app.js',
+    debug: true
+  });
+
+  bundler.transform(babelify);
+
+  bundler.bundle()
+    .on('error', function(err) { console.error(err) })
+    .pipe(source('app.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('dist/js'))
+    .pipe(notify({message: `js task: ${filePath}`}))
+})
+
 gulp.task('img', () => {
   return gulp.src(paths.image)
     .pipe(cached(imagemin({
@@ -121,11 +149,12 @@ gulp.task('setWatch', () => {
   global.isWatching = true;
 });
 
-gulp.task('watch', ['browserSync', 'setWatch', 'pug', 'sass', 'img'], () => {
-  gulp.watch(paths.pugs, ['pug']);
-  gulp.watch(paths.sass, ['sass']);
+gulp.task('watch', ['browserSync', 'setWatch', 'pug', 'sass', 'img', 'js'], () => {
   gulp.watch(paths.css).on('change', browserSync.reload);
   gulp.watch(paths.image, ['img']);
+  gulp.watch(paths.script, ['js']).on('change', browserSync.reload);
+  gulp.watch(paths.pugs, ['pug']);
+  gulp.watch(paths.sass, ['sass']);
 });
 
 gulp.task('clean:dist', () => {
@@ -133,9 +162,9 @@ gulp.task('clean:dist', () => {
 });
 
 gulp.task('build', () => {
-  runSequence('clean:dist', ['pug', 'sass', 'img']);
+  runSequence('clean:dist', ['pug', 'sass', 'img', 'js']);
 });
 
 gulp.task('default', () => {
-  runSequence(['pug', 'sass', 'img', 'browserSync', 'watch'])
+  runSequence(['pug', 'sass', 'img', 'js','browserSync', 'watch'])
 });
