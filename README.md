@@ -270,9 +270,9 @@ gulp.task('watch', ['browserSync', 'setWatch', 'pug'], () => {
 為了防止 partial 檔案被處理輸出成 html，要在檔名前面加個 `_` ，或是在父層資料夾名稱加個 `_`：
 
 ```
-/app/index.jade
-/app/_header.jade
-/app/_partials/article.jade
+/app/index.pug
+/app/_header.pug
+/app/_partials/article.pug
 /dist/
 ```
 
@@ -323,7 +323,7 @@ Sass 跟 Pug 一樣會有繼承問題要處理，找到 `gulp-sass-multi-inherit
 $ npm install --save-dev gulp-sass gulp-sass-multi-inheritance
 ```
 
-設定 `sass` task，除了按照官方只是，也加上 debug 以便了解任務流程：
+設定 `sass` task，除了按照官方指示，也加上 debug 以便了解任務流程：
 
 ```javascript
 // sass
@@ -608,7 +608,7 @@ $ npm install --save-dev gulp-cssnano
 ```
 
 在 `.pipe(sass.sync())` 後面加上：`.pipe(cssnano({
-      zindex: false // fixed the z-index bug
+      zindex: false
     }))` ：
 
 ```javascript
@@ -940,7 +940,7 @@ const plugins = gulpLoadPlugins({
 });
 ```
 
-接著在四個檔案方別設定各自任務：
+接著在四個檔案分別設定各自任務：
 
 ```javascript
 // pug.js
