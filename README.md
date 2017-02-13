@@ -567,9 +567,9 @@ $ bower install <plugin_name> --save
 
 `--save` 指令是讓套件資訊存進 `bower.json`，如果沒有這個指令 `bower.json` 就不會紀錄。
 
-安裝完之後，你會在專案目錄下看到一個 `bower_componnents` 資料夾，裡面就會放你安裝的所有套件。
+安裝完之後，你會在專案目錄下看到一個 `bower_components` 資料夾，裡面就會放你安裝的所有套件。
 
-在 `.gitignore` 加上忽略 `bower_componnents` 資料夾。
+在 `.gitignore` 加上忽略 `bower_components` 資料夾。
 
 ### 安裝 Susy
 
