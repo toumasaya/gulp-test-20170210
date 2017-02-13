@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "susy": "^2.2.12",
-    "breakpoint-sass": "^2.7.1"
+    "breakpoint-sass": "^2.7.1",
+    "jquery": "^3.1.1"
   }
 }
